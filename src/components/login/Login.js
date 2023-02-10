@@ -10,6 +10,8 @@ import KeyIcon from '@mui/icons-material/Key';
 import LoadingButton from '@mui/lab/LoadingButton'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { CAFE_EXOTIQUE_API_URL } from '../constants'
+import Alert from '@mui/material/Alert'
 
 function Login(props) {
 
@@ -18,6 +20,7 @@ function Login(props) {
     const [phoneError, setPhoneError] = useState(false)
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setpasswordError] = useState(false)
+    const [loginFailed, setLoginFailed] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
@@ -78,14 +81,16 @@ function Login(props) {
                 "username": username,
                 "password": password
             }
-            axios.post('http://localhost:3000/staff/login', request)
+            axios.post(CAFE_EXOTIQUE_API_URL + '/staff/login', request)
                 .then(async res => {
+                    setLoginFailed(false)
                     console.log("Navigating", res.data)
                     await props.setUser(res.data)
                     navigate("/")
                 })
                 .catch(err => {
                     console.log(err)
+                    setLoginFailed(true)
                 })
                 .finally(() => {
                     setLoading(false)
@@ -130,6 +135,9 @@ function Login(props) {
                         </Grid>
                         <Grid item alignContent={'center'} className="paddingTop40 paddingBottom20">
                             <LoadingButton variant="contained" onClick={handleSubmit} loading={loading}>Authenticate</LoadingButton>
+                        </Grid>
+                        <Grid item alignContent={'center'}>
+                            {loginFailed && <Alert severity="error">Login failed !  Check username / password</Alert>}
                         </Grid>
                     </Grid>
                 </Grid>
