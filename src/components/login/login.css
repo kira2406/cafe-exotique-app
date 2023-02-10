@@ -1,0 +1,11 @@
+.loginCard{
+    padding-top: 20px;
+    min-height: 60vh;
+    width: 500px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.loginGrid{
+    background-color: #22577A;
+}
