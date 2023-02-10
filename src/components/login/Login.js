@@ -101,8 +101,8 @@ function Login(props) {
     }
 
     return (
-        <Grid container align="center" className='content'>
-            <Paper className='loginCard'>
+        <Grid container align="center" className='content loginGrid'>
+            <Paper className='loginCard' elevation={10}>
                 <Grid container>
                     <Grid item xs={12} md={12}>
                         <Typography variant="h4">
