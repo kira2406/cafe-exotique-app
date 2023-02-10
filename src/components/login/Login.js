@@ -81,7 +81,7 @@ function Login(props) {
                 "username": username,
                 "password": password
             }
-            axios.post(CAFE_EXOTIQUE_API_URL + '/staff/login', request)
+            axios.post(`${CAFE_EXOTIQUE_API_URL}/staff/login`, request)
                 .then(async res => {
                     setLoginFailed(false)
                     console.log("Navigating", res.data)
