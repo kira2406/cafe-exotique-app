@@ -2,10 +2,14 @@ import './App.css';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Login from './components/login/Login';
 import AddStaff from './components/addStaff/AddStaff';
-import Dashboard from './components/dashboard/Dashboard';
+import Homepage from './components/homepage/Homepage';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from "../src/theme"
 import { useState } from 'react';
+import { Provider } from 'react-redux';
+import store from "./store"
+import AppMessage from './components/appMessage/appMessage'
+import Table from './components/table/Table';
 // import PrivateRoute from './components/privateRoute/privateRoute';
 
 function App() {
@@ -26,15 +30,19 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<PrivateRoute><Dashboard user={user} /></PrivateRoute>} />
-          <Route path="/addStaff" element={<AddStaff />} />
-          <Route path="/login" element={<Login setUser={setUser} />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <AppMessage />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<PrivateRoute><Homepage user={user} /></PrivateRoute>} />
+            <Route path="/addStaff" element={<AddStaff />} />
+            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/table/:tableId" element={<Table />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </Provider>
   );
 }
 

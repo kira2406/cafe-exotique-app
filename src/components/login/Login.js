@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './login.css'
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import KeyIcon from '@mui/icons-material/Key';
@@ -12,6 +12,10 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { CAFE_EXOTIQUE_API_URL } from '../constants'
 import Alert from '@mui/material/Alert'
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserDetails, userLoginRequest } from "../../redux/user/actions"
+import { addAppMessage } from "../../redux/app/actions"
+import { Button } from '@mui/material'
 
 function Login(props) {
 
@@ -20,10 +24,17 @@ function Login(props) {
     const [phoneError, setPhoneError] = useState(false)
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setpasswordError] = useState(false)
-    const [loginFailed, setLoginFailed] = useState(false)
-    const [loading, setLoading] = useState(false)
+    // const [loginFailed, setLoginFailed] = useState(false)
+    // const [loading, setLoading] = useState(false)
+
+    const dispatch = useDispatch();
 
     const navigate = useNavigate()
+
+    const appMessages = useSelector((state) => state.app.appMessages);
+    const loginSuccess = useSelector((state) => state.user.loginSuccess)
+    const loginFailed = useSelector((state) => state.user.loginFailed)
+    const loading = useSelector((state) => state.user.loading)
 
     const handleUsernameChange = (input) => {
         setUsername(input.target.value)
@@ -73,31 +84,21 @@ function Login(props) {
         return false
     }
 
-    const handleSubmit = () => {
-
+    const handleSubmit = async () => {
+        // setLoading(true)
+        // dispatch(addAppMessage("System Error", "error", false))
+        // dispatch(addAppMessage("System Error", "info", true))
         if (validateUsername() && validatePassword()) {
-            setLoading(true)
             const request = {
-                "username": username,
-                "password": password
+                username: username,
+                password: password
             }
-            axios.post(`${CAFE_EXOTIQUE_API_URL}/staff/login`, request)
-                .then(async res => {
-                    setLoginFailed(false)
-                    console.log("Navigating", res.data)
-                    await props.setUser(res.data)
-                    navigate("/")
-                })
-                .catch(err => {
-                    console.log(err)
-                    setLoginFailed(true)
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
+
+            dispatch(userLoginRequest(request))
         } else {
             setpasswordError(true)
         }
+        // setLoading(false)
     }
 
     return (
@@ -134,11 +135,12 @@ function Login(props) {
                             </Box>
                         </Grid>
                         <Grid item alignContent={'center'} className="paddingTop40 paddingBottom20">
-                            <LoadingButton variant="contained" onClick={handleSubmit} loading={loading}>Authenticate</LoadingButton>
+                            {!loginSuccess && <LoadingButton color={loginFailed ? "error" : "primary"} variant="contained" onClick={handleSubmit} disabled={loading} loading={loading}>{loginFailed ? "Login Failed" : "Authenticate"}</LoadingButton>}
+                            {loginSuccess && <Typography>Logged in successfully!</Typography>}
                         </Grid>
-                        <Grid item alignContent={'center'}>
+                        {/* <Grid item alignContent={'center'}>
                             {loginFailed && <Alert severity="error">Login failed !  Check username / password</Alert>}
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </Grid>
 

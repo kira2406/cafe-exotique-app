@@ -1,0 +1,5 @@
+.appMessage{
+    position: absolute;
+    min-width: 100%;
+    z-index: 20;
+}
